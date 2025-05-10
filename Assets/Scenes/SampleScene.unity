@@ -342,7 +342,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 4
   m_CollisionDetection: 0
 --- !u!1 &406813624
 GameObject:
@@ -1448,6 +1448,7 @@ MonoBehaviour:
   exitPrefab: {fileID: 1083809196}
   virtualCamera: {fileID: 145493651}
   playerInstance: {fileID: 0}
+  difficulty: 0
 --- !u!224 &1719557456 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8135886326569738822, guid: 56fae09712773584fb63896d473a98ee, type: 3}
