@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 public enum Difficulty
 {
     Easy,
@@ -9,6 +10,9 @@ public enum Difficulty
 }
 public class MazeGenerator : MonoBehaviour
 {
+    private bool colorsChanged = false;
+    private Vector3 playerStartPos;
+
     public int width = 15;
     public int height = 15;
     public GameObject wallPrefab;
@@ -27,6 +31,7 @@ public class MazeGenerator : MonoBehaviour
     public delegate void TimeUpdated(float remaining);
     public event TimeUpdated OnTimeUpdated;
     private List<GameObject> spawnedObjects = new List<GameObject>();
+    public DynamicJoystick dynamicJoystick;
 
     public void StartMaze()
     {
@@ -54,6 +59,30 @@ public class MazeGenerator : MonoBehaviour
         if (isTiming)
         {
             timeRemaining -= Time.deltaTime;
+
+            if (difficulty == Difficulty.Hard && !colorsChanged && timeRemaining <= 60f)
+            {
+                foreach (var obj in spawnedObjects)
+                {
+                    if (obj.CompareTag("Wall"))
+                    {
+                        Renderer rend = obj.GetComponent<Renderer>();
+                        if (rend != null)
+                        {
+                            Color[] targetColors = { Color.red, Color.green, Color.yellow, Color.magenta };
+                            Color targetColor = targetColors[Random.Range(0, targetColors.Length)];
+                            rend.material.DOColor(targetColor, 1f);
+                        }
+                    }
+                }
+
+                if (playerInstance != null)
+                {
+                    playerInstance.transform.DOMove(playerStartPos, 1f);
+                }
+
+                colorsChanged = true;
+            }
 
             // UI’ya bildir
             OnTimeUpdated?.Invoke(timeRemaining);
@@ -146,11 +175,11 @@ public class MazeGenerator : MonoBehaviour
                 {
                     var wall = Instantiate(wallPrefab, pos + Vector3.up * 0.5f, Quaternion.identity);
                     spawnedObjects.Add(wall);
+                    wall.tag = "Wall";
                     Renderer rend = wall.GetComponent<Renderer>();
                     if (rend != null)
                     {
-                        Color[] colors = { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.magenta };
-                        rend.material.color = colors[Random.Range(0, colors.Length)];
+                            rend.material.color = Color.blue;
                     }
                 }
                 else if (x == 1 && y == 1)
@@ -158,6 +187,7 @@ public class MazeGenerator : MonoBehaviour
                     // Oyuncuyu burada instantiate ediyoruz ve referansını alıyoruz
                     playerInstance = Instantiate(playerPrefab, pos + Vector3.up * 1f, Quaternion.identity);
                     spawnedObjects.Add(playerInstance);
+                    playerStartPos = playerInstance.transform.position;
                 }
                 else if (x == width - 2 && y == height - 2)
                 {
