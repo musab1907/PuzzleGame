@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+   public enum Difficulty
+{
+    Easy,
+    Medium,
+    Hard
+}
 public class MazeGenerator : MonoBehaviour
 {
     public int width = 15;
@@ -13,12 +18,15 @@ public class MazeGenerator : MonoBehaviour
     public GameObject playerInstance;
 
     private int[,] maze;
+    public Difficulty difficulty = Difficulty.Easy; 
+ 
 
-    void Start()
-    {
-        GenerateMaze();
-        DrawMaze();
-    }
+    public void StartMaze()
+{
+    SetMazeSizeByDifficulty();
+    GenerateMaze();
+    DrawMaze();
+}
 
     void GenerateMaze()
     {
@@ -101,4 +109,23 @@ public class MazeGenerator : MonoBehaviour
             list[r] = tmp;
         }
     }
+
+    void SetMazeSizeByDifficulty() //Zorluk seçimi
+{
+    switch (difficulty)
+    {
+        case Difficulty.Easy:
+            width = 11;
+            height = 11;
+            break;
+        case Difficulty.Medium:
+            width = 17;
+            height = 17;
+            break;
+        case Difficulty.Hard:
+            width = 25;
+            height = 25;
+            break;
+    }
+}
 }
