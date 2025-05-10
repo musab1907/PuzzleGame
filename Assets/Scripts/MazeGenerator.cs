@@ -10,6 +10,11 @@ public enum Difficulty
 }
 public class MazeGenerator : MonoBehaviour
 {
+    // How long to show the solution path in seconds
+    public float solutionDisplayTime = 5f;
+    // Editable solution path line width
+    public float solutionLineStartWidth = 0.1f;
+    public float solutionLineEndWidth = 0.1f;
     private bool colorsChanged = false;
     private Vector3 playerStartPos;
 
@@ -32,6 +37,12 @@ public class MazeGenerator : MonoBehaviour
     public event TimeUpdated OnTimeUpdated;
     private List<GameObject> spawnedObjects = new List<GameObject>();
     public DynamicJoystick dynamicJoystick;
+
+    private List<Vector2Int> solutionPath = new List<Vector2Int>();
+    public GameObject pathMarkerPrefab;
+
+    public Color solutionStartColor = Color.cyan;
+    public Color solutionEndColor = Color.cyan;
 
     public void StartMaze()
     {
@@ -102,6 +113,7 @@ public class MazeGenerator : MonoBehaviour
     void GenerateMaze()
     {
         maze = new int[width, height];
+        solutionPath.Clear();
         // Başta hepsi duvar (1)
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
@@ -115,6 +127,8 @@ public class MazeGenerator : MonoBehaviour
         maze[1, 1] = 0; // Giriş
         Vector2Int exit = FindFarthestPointFromStart();
         maze[exit.x, exit.y] = 0;// Çıkış
+
+        FindSolutionPath();
     }
     Vector2Int FindFarthestPointFromStart()
     {
@@ -152,11 +166,96 @@ public class MazeGenerator : MonoBehaviour
             int nx = x + dx[dir];
             int ny = y + dy[dir];
 
-            if (nx > 0 && nx < width && ny > 0 && ny < height && maze[nx, ny] == 1)
+            if (nx > 0 && ny > 0 && nx < width - 1 && ny < height - 1 && maze[nx, ny] == 1)
             {
                 maze[x + dx[dir] / 2, y + dy[dir] / 2] = 0;
                 CarvePath(nx, ny);
             }
+        }
+    }
+
+    void FindSolutionPath()
+    {
+        Vector2Int start = new Vector2Int(1, 1);
+        Vector2Int end = FindFarthestPointFromStart();
+        Dictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+
+        queue.Enqueue(start);
+        visited.Add(start);
+
+        int[] dx = { 0, 1, 0, -1 };
+        int[] dy = { 1, 0, -1, 0 };
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+            if (current == end) break;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int nx = current.x + dx[i];
+                int ny = current.y + dy[i];
+                Vector2Int neighbor = new Vector2Int(nx, ny);
+
+                if (nx >= 0 && nx < width && ny >= 0 && ny < height && maze[nx, ny] == 0 && !visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    cameFrom[neighbor] = current;
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+
+        // Reconstruct path
+        solutionPath.Clear();
+        Vector2Int pathCursor = end;
+        while (pathCursor != start)
+        {
+            solutionPath.Add(pathCursor);
+            pathCursor = cameFrom[pathCursor];
+        }
+        solutionPath.Add(start);
+        solutionPath.Reverse();
+    }
+
+    public void ShowSolutionPath()
+    {
+        LineRenderer lr = GetComponent<LineRenderer>();
+        if (lr == null)
+        {
+            lr = gameObject.AddComponent<LineRenderer>();
+            lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.startColor = solutionStartColor;
+            lr.endColor = solutionEndColor;
+            lr.startWidth = solutionLineStartWidth;
+            lr.endWidth = solutionLineEndWidth;
+            lr.useWorldSpace = true;
+        }
+        else
+        {
+            lr.startWidth = solutionLineStartWidth;
+            lr.endWidth = solutionLineEndWidth;
+        }
+
+        lr.positionCount = solutionPath.Count;
+        for (int i = 0; i < solutionPath.Count; i++)
+        {
+            lr.SetPosition(i, new Vector3(solutionPath[i].x, 0.2f, solutionPath[i].y));
+        }
+
+        // Start coroutine to hide it after a delay
+        StartCoroutine(HideSolutionPathAfterDelay());
+    }
+
+    private System.Collections.IEnumerator HideSolutionPathAfterDelay()
+    {
+        yield return new WaitForSeconds(solutionDisplayTime);
+        LineRenderer lr = GetComponent<LineRenderer>();
+        if (lr != null)
+        {
+            lr.positionCount = 0;
         }
     }
 
