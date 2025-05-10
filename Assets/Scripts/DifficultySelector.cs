@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class DifficultySelector : MonoBehaviour
 {
-    public Dropdown difficultyDropdown; // UI Dropdown Menüsü
+    public TMP_Dropdown difficultyDropdown; // UI Dropdown Menüsü
     public MazeGenerator mazeGenerator; // MazeGenerator referansı
+    public CanvasAnims canvasAnims;
+    private GameObject homeButton;
 
     public void OnDifficultyChanged()
     {
@@ -14,7 +16,10 @@ public class DifficultySelector : MonoBehaviour
 
     public void StartGame()
     {
-        
-        mazeGenerator.StartMaze(); // Oyunuzmuz başlatılıyo
+        // Zorluğu burada manuel olarak güncelle
+        mazeGenerator.difficulty = (Difficulty)difficultyDropdown.value;
+
+        mazeGenerator.StartMaze();   // artık doğru zorlukla çalışır ✅
+        canvasAnims.GameStart();
     }
 }
