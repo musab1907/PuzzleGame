@@ -23,4 +23,17 @@ public class FloatingJoystick : Joystick
         background.gameObject.SetActive(false);
         base.OnPointerUp(eventData);
     }
+
+    /// <summary>
+    /// Resets the joystick handle and hides the background.
+    /// </summary>
+    public void ResetJoystick()
+    {
+        // Hide the joystick background
+        background.gameObject.SetActive(false);
+        // Reset handle position to center
+        handle.anchoredPosition = Vector2.zero;
+        // Clear input vector (protected member of base class)
+        input = Vector2.zero;
+    }
 }

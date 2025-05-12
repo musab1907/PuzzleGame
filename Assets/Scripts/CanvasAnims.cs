@@ -90,6 +90,7 @@ public class CanvasAnims : MonoBehaviour
         nextPanel.SetActive(true);
         gamePanel.SetActive(false);
         difficultyDropdown.SetActive(true);
+        mazeGenerator.floatingJoystick.ResetJoystick();
     }
 
     public void GoHome()
