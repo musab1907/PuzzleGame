@@ -5,7 +5,7 @@ using UnityEngine;
 public class JoystickPlayerExample : MonoBehaviour
 {
     public float speed;
-    public DynamicJoystick dynamicJoystick;
+    public FloatingJoystick floatingJoystick;
     public Rigidbody rb;
     public MazeGenerator mazeGenerator;
 
@@ -23,7 +23,7 @@ public class JoystickPlayerExample : MonoBehaviour
 
         if (mazeGenerator != null)
         {
-            dynamicJoystick = mazeGenerator.dynamicJoystick;
+            floatingJoystick = mazeGenerator.floatingJoystick;
         }
         else
         {
@@ -33,13 +33,17 @@ public class JoystickPlayerExample : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 input = new Vector2(dynamicJoystick.Horizontal, dynamicJoystick.Vertical);
+        Vector2 input = new Vector2(floatingJoystick.Horizontal, floatingJoystick.Vertical);
 
         if (input.magnitude > 0.1f)
         {
+            rb.drag = 0f; // Aktif kontrol varsa, direnç olmasın
             Vector3 moveDir = new Vector3(input.x, 0, input.y);
             rb.AddForce(moveDir.normalized * speed, ForceMode.Force);
         }
-        // Joystick bırakıldığında hiçbir şey yapma; sürtünme doğal yavaşlatacak
+        else
+        {
+            rb.drag = 3f; // Elini çektiysen doğal yavaşlama olsun
+        }
     }
 }

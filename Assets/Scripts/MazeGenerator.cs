@@ -36,7 +36,7 @@ public class MazeGenerator : MonoBehaviour
     public delegate void TimeUpdated(float remaining);
     public event TimeUpdated OnTimeUpdated;
     private List<GameObject> spawnedObjects = new List<GameObject>();
-    public DynamicJoystick dynamicJoystick;
+    public FloatingJoystick floatingJoystick;
 
     private List<Vector2Int> solutionPath = new List<Vector2Int>();
     public GameObject pathMarkerPrefab;
