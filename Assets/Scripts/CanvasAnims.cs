@@ -76,6 +76,7 @@ public class CanvasAnims : MonoBehaviour
     {
         mazeGenerator.ClearMaze(); // Tüm oyun objelerini sahneden kaldır
                                    // Panel geçişi vs. burada yapılabilir
+        OpenStartPanel();
     }
     public void GameStart()
     {
