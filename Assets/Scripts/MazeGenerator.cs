@@ -13,6 +13,10 @@ public class MazeGenerator : MonoBehaviour
     public Vector3 easyTopCamPosition;
     public Vector3 mediumTopCamPosition;
     public Vector3 hardTopCamPosition;
+    [Header("Top Cam Body Offsets By Difficulty")]
+    public Vector3 easyTopCamOffset = new Vector3(0, 20, 0);
+    public Vector3 mediumTopCamOffset = new Vector3(0, 30, 0);
+    public Vector3 hardTopCamOffset = new Vector3(0, 40, 0);
     // How long to show the solution path in seconds
     public float solutionDisplayTime = 5f;
     // Editable solution path line width
@@ -226,6 +230,9 @@ public class MazeGenerator : MonoBehaviour
 
     public void ShowSolutionPath()
     {
+        Transform topViewTarget = new GameObject("TopViewTarget").transform;
+        topViewTarget.position = new Vector3(width / 2f, 0f, height / 2f);
+
         LineRenderer lr = GetComponent<LineRenderer>();
         if (lr == null)
         {
@@ -250,6 +257,8 @@ public class MazeGenerator : MonoBehaviour
         }
 
         // Switch cameras for solution path view
+        topCam.Follow = topViewTarget;
+        topCam.LookAt = null;
         if (topCam != null) topCam.Priority = 20;
         if (virtualCamera != null) virtualCamera.Priority = 10;
         if (topCam != null)
@@ -260,13 +269,13 @@ public class MazeGenerator : MonoBehaviour
                 switch (difficulty)
                 {
                     case Difficulty.Easy:
-                        body.m_TrackedObjectOffset = easyTopCamPosition;
+                        body.m_TrackedObjectOffset = easyTopCamOffset;
                         break;
                     case Difficulty.Medium:
-                        body.m_TrackedObjectOffset = mediumTopCamPosition;
+                        body.m_TrackedObjectOffset = mediumTopCamOffset;
                         break;
                     case Difficulty.Hard:
-                        body.m_TrackedObjectOffset = hardTopCamPosition;
+                        body.m_TrackedObjectOffset = hardTopCamOffset;
                         break;
                 }
             }
@@ -308,7 +317,7 @@ public class MazeGenerator : MonoBehaviour
                     Renderer rend = wall.GetComponent<Renderer>();
                     if (rend != null)
                     {
-                            rend.material.color = Color.blue;
+                        rend.material.color = Color.blue;
                     }
                 }
                 else if (x == 1 && y == 1)

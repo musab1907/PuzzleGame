@@ -44,6 +44,8 @@ public class JoystickPlayerExample : MonoBehaviour
         else
         {
             rb.drag = 3f; // Elini çektiysen doğal yavaşlama olsun
+            Debug.Log("Çektii" + rb.drag);
+            
         }
     }
 }
