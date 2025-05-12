@@ -10,6 +10,12 @@ public enum Difficulty
 }
 public class MazeGenerator : MonoBehaviour
 {
+    private static int[,] savedMazeState = null;
+    private System.Random deterministicRNG;
+    public static int lastMazeSeed = -1;
+    public static Difficulty restartDifficulty = Difficulty.Easy;
+    private int mazeSeed;
+    public static bool isRestarting = false;
     public Vector3 easyTopCamPosition;
     public Vector3 mediumTopCamPosition;
     public Vector3 hardTopCamPosition;
@@ -52,9 +58,27 @@ public class MazeGenerator : MonoBehaviour
     public Color solutionStartColor = Color.cyan;
     public Color solutionEndColor = Color.cyan;
 
+    private Vector2Int exitPosition;
+
     public void StartMaze()
     {
+        if (isRestarting)
+        {
+            difficulty = restartDifficulty;
+        }
         SetMazeSizeByDifficulty();
+        if (!isRestarting)
+        {
+            mazeSeed = Random.Range(0, int.MaxValue);
+            lastMazeSeed = mazeSeed;
+        }
+        else
+        {
+            mazeSeed = lastMazeSeed;
+        }
+
+        deterministicRNG = new System.Random(mazeSeed);
+
         switch (difficulty)
         {
             case Difficulty.Easy:
@@ -115,11 +139,21 @@ public class MazeGenerator : MonoBehaviour
     }
     public void RestartLevel()
     {
+        isRestarting = true;
+        restartDifficulty = difficulty;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void GenerateMaze()
     {
+        if (MazeGenerator.isRestarting && savedMazeState != null)
+        {
+            maze = (int[,])savedMazeState.Clone();
+            // Çözüm yolunu ve çıkış noktasını yeniden hesapla
+            exitPosition = FindFarthestPointFromStart();
+            FindSolutionPath();
+            return;
+        }
         maze = new int[width, height];
         solutionPath.Clear();
         // Başta hepsi duvar (1)
@@ -133,10 +167,11 @@ public class MazeGenerator : MonoBehaviour
 
         // Giriş ve çıkış
         maze[1, 1] = 0; // Giriş
-        Vector2Int exit = FindFarthestPointFromStart();
-        maze[exit.x, exit.y] = 0;// Çıkış
+        exitPosition = FindFarthestPointFromStart();
+        maze[exitPosition.x, exitPosition.y] = 0; // Çıkış
 
         FindSolutionPath();
+        savedMazeState = (int[,])maze.Clone();
     }
     Vector2Int FindFarthestPointFromStart()
     {
@@ -185,7 +220,7 @@ public class MazeGenerator : MonoBehaviour
     void FindSolutionPath()
     {
         Vector2Int start = new Vector2Int(1, 1);
-        Vector2Int end = FindFarthestPointFromStart();
+        Vector2Int end = exitPosition;
         Dictionary<Vector2Int, Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
@@ -327,7 +362,7 @@ public class MazeGenerator : MonoBehaviour
                     spawnedObjects.Add(playerInstance);
                     playerStartPos = playerInstance.transform.position;
                 }
-                else if (x == width - 2 && y == height - 2)
+                else if (x == exitPosition.x && y == exitPosition.y)
                 {
                     var exit = Instantiate(exitPrefab, pos + Vector3.up * 0.5f, Quaternion.identity);
                     spawnedObjects.Add(exit);
@@ -358,7 +393,7 @@ public class MazeGenerator : MonoBehaviour
         for (int i = 0; i < list.Count; i++)
         {
             int tmp = list[i];
-            int r = Random.Range(i, list.Count);
+            int r = deterministicRNG.Next(i, list.Count);
             list[i] = list[r];
             list[r] = tmp;
         }
@@ -388,8 +423,8 @@ public class MazeGenerator : MonoBehaviour
         int attempts = 0;
         while (count > 0 && attempts < 1000)
         {
-            int x = Random.Range(1, width - 1);
-            int y = Random.Range(1, height - 1);
+            int x = deterministicRNG.Next(1, width - 1);
+            int y = deterministicRNG.Next(1, height - 1);
             if (maze[x, y] == 1)
             {
                 int openNeighbors = 0;

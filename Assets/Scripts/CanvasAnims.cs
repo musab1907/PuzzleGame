@@ -24,6 +24,25 @@ public class CanvasAnims : MonoBehaviour
     [SerializeField] private GameObject gamePanel;
     public MazeGenerator mazeGenerator;
     public GameObject difficultyDropdown;
+    void Start()
+    {
+        if (MazeGenerator.isRestarting)
+        {
+            gamePanel.SetActive(true);
+            restartPanel.SetActive(false);
+            startPanel.SetActive(false);
+            nextPanel.SetActive(false);
+            difficultyDropdown.SetActive(false);
+
+            mazeGenerator.StartMaze(); // Maze'i yeniden başlat
+            MazeGenerator.isRestarting = false; // Sadece bir kez kullanılacak
+
+            return;
+        }
+        else{
+            OpenStartPanel(); // Normal açılış
+        }
+    }
     void Update()
     {
         foreach (var item in animatedTexts)
