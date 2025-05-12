@@ -1271,6 +1271,8 @@ RectTransform:
   - {fileID: 1806825627}
   - {fileID: 339185557}
   - {fileID: 884194694}
+  - {fileID: 1924336549}
+  - {fileID: 2131515952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1342,6 +1344,7 @@ MonoBehaviour:
   restartPanel: {fileID: 339185556}
   nextPanel: {fileID: 884194693}
   gamePanel: {fileID: 1806825626}
+  dropdownMenuPanel: {fileID: 0}
   mazeGenerator: {fileID: 1510409919}
   difficultyDropdown: {fileID: 1924336548}
 --- !u!1 &546369238
@@ -3490,7 +3493,7 @@ MonoBehaviour:
   wallPrefab: {fileID: 4414515732239970722, guid: 2e78fac29b7e848f3a51282abd172e11, type: 3}
   floorPrefab: {fileID: 3433885868791835823, guid: 07f09d7d4a4464f7d80fb839d73ca3d6, type: 3}
   playerPrefab: {fileID: 7071133414634478472, guid: d3234c47e92f54f64919c1b876668904, type: 3}
-  exitPrefab: {fileID: 4972493548237780358, guid: 69d2a5e391df34434a6d2547f4eb4e06, type: 3}
+  exitPrefab: {fileID: 1437840403314352, guid: 01ece1de39236dc42930221384647aec, type: 3}
   virtualCamera: {fileID: 145493651}
   topCam: {fileID: 2095538066}
   playerInstance: {fileID: 0}
@@ -3889,7 +3892,6 @@ RectTransform:
   m_Children:
   - {fileID: 935844232}
   - {fileID: 322811338}
-  - {fileID: 1924336549}
   m_Father: {fileID: 484535356}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4104,7 +4106,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1924336549
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4121,7 +4123,7 @@ RectTransform:
   - {fileID: 1975401096}
   - {fileID: 1795536522}
   - {fileID: 1665737432}
-  m_Father: {fileID: 1818683523}
+  m_Father: {fileID: 484535356}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4790,6 +4792,41 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 4, y: -4}
   m_UseGraphicAlpha: 1
+--- !u!1 &2131515951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2131515952}
+  m_Layer: 5
+  m_Name: DropdownMenuPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &2131515952
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131515951}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 484535356}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

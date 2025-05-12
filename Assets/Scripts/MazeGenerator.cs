@@ -132,8 +132,14 @@ public class MazeGenerator : MonoBehaviour
 
             if (timeRemaining <= 0f)
             {
+                // Süre bittiğinde sayaçı durdur ve 00:00 olarak güncelle
+                timeRemaining = 0f;
                 isTiming = false;
-                //RestartLevel();
+                // Restart panelini aç
+                CanvasAnims canvas = FindObjectOfType<CanvasAnims>();
+                if (canvas != null)
+                    canvas.OpenRestartPanel();
+                return;
             }
         }
     }
@@ -364,7 +370,7 @@ public class MazeGenerator : MonoBehaviour
                 }
                 else if (x == exitPosition.x && y == exitPosition.y)
                 {
-                    var exit = Instantiate(exitPrefab, pos + Vector3.up * 0.5f, Quaternion.identity);
+                    var exit = Instantiate(exitPrefab, pos + Vector3.up * 1.4f, Quaternion.Euler(0,43,0));
                     spawnedObjects.Add(exit);
                 }
             }

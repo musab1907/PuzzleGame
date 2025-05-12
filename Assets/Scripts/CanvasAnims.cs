@@ -22,6 +22,7 @@ public class CanvasAnims : MonoBehaviour
     [SerializeField] private GameObject restartPanel;
     [SerializeField] private GameObject nextPanel;
     [SerializeField] private GameObject gamePanel;
+    [SerializeField] private GameObject dropdownMenuPanel;
     public MazeGenerator mazeGenerator;
     public GameObject difficultyDropdown;
     void Start()
@@ -99,6 +100,8 @@ public class CanvasAnims : MonoBehaviour
     }
     public void GameStart()
     {
+        mazeGenerator.ClearMaze();
+        mazeGenerator.StartMaze();
         restartPanel.SetActive(false);
         nextPanel.SetActive(false);
         startPanel.SetActive(false);
