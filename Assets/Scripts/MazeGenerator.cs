@@ -10,6 +10,9 @@ public enum Difficulty
 }
 public class MazeGenerator : MonoBehaviour
 {
+    public Vector3 easyTopCamPosition;
+    public Vector3 mediumTopCamPosition;
+    public Vector3 hardTopCamPosition;
     // How long to show the solution path in seconds
     public float solutionDisplayTime = 5f;
     // Editable solution path line width
@@ -25,6 +28,7 @@ public class MazeGenerator : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject exitPrefab;
     public Cinemachine.CinemachineVirtualCamera virtualCamera;
+    public Cinemachine.CinemachineVirtualCamera topCam;
     public GameObject playerInstance;
 
     private int[,] maze;
@@ -245,6 +249,29 @@ public class MazeGenerator : MonoBehaviour
             lr.SetPosition(i, new Vector3(solutionPath[i].x, 0.2f, solutionPath[i].y));
         }
 
+        // Switch cameras for solution path view
+        if (topCam != null) topCam.Priority = 20;
+        if (virtualCamera != null) virtualCamera.Priority = 10;
+        if (topCam != null)
+        {
+            var body = topCam.GetCinemachineComponent<Cinemachine.CinemachineFramingTransposer>();
+            if (body != null)
+            {
+                switch (difficulty)
+                {
+                    case Difficulty.Easy:
+                        body.m_TrackedObjectOffset = easyTopCamPosition;
+                        break;
+                    case Difficulty.Medium:
+                        body.m_TrackedObjectOffset = mediumTopCamPosition;
+                        break;
+                    case Difficulty.Hard:
+                        body.m_TrackedObjectOffset = hardTopCamPosition;
+                        break;
+                }
+            }
+        }
+
         // Start coroutine to hide it after a delay
         StartCoroutine(HideSolutionPathAfterDelay());
     }
@@ -257,6 +284,9 @@ public class MazeGenerator : MonoBehaviour
         {
             lr.positionCount = 0;
         }
+        // Restore cameras (priority swap)
+        if (topCam != null) topCam.Priority = 10;
+        if (virtualCamera != null) virtualCamera.Priority = 20;
     }
 
     void DrawMaze()
@@ -298,7 +328,7 @@ public class MazeGenerator : MonoBehaviour
         if (virtualCamera != null && playerInstance != null)
         {
             virtualCamera.Follow = playerInstance.transform;
-            virtualCamera.LookAt = playerInstance.transform;
+            virtualCamera.LookAt = null;
         }
     }
 
