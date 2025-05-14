@@ -2635,7 +2635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2597247015651883526, guid: 3dfb927023f6a4900b4149a96a3a9324, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -342
+      value: -432.3
       objectReference: {fileID: 0}
     - target: {fileID: 2597247015651883526, guid: 3dfb927023f6a4900b4149a96a3a9324, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4185,6 +4185,8 @@ MonoBehaviour:
     - m_Text: MEDIUM
       m_Image: {fileID: 0}
     - m_Text: HARD
+      m_Image: {fileID: 0}
+    - m_Text: EXTREME
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

@@ -6,7 +6,8 @@ public enum Difficulty
 {
     Easy,
     Medium,
-    Hard
+    Hard,
+    Extreme
 }
 public class MazeGenerator : MonoBehaviour
 {
@@ -90,6 +91,9 @@ public class MazeGenerator : MonoBehaviour
             case Difficulty.Hard:
                 levelTime = 120f;
                 break;
+            case Difficulty.Extreme:
+                levelTime = 90f;
+                break;
         }
         timeRemaining = levelTime;
         isTiming = true;
@@ -103,7 +107,7 @@ public class MazeGenerator : MonoBehaviour
         {
             timeRemaining -= Time.deltaTime;
 
-            if (difficulty == Difficulty.Hard && !colorsChanged && timeRemaining <= 60f)
+            if ((difficulty == Difficulty.Hard || difficulty == Difficulty.Extreme) && !colorsChanged && timeRemaining <= 60f)
             {
                 foreach (var obj in spawnedObjects)
                 {
@@ -318,6 +322,9 @@ public class MazeGenerator : MonoBehaviour
                     case Difficulty.Hard:
                         body.m_TrackedObjectOffset = hardTopCamOffset;
                         break;
+                    case Difficulty.Extreme:
+                        body.m_TrackedObjectOffset = hardTopCamOffset + new Vector3(0, 10, 0); // More zoomed out
+                        break;
                 }
             }
         }
@@ -421,6 +428,10 @@ public class MazeGenerator : MonoBehaviour
                 width = 25;
                 height = 25;
                 break;
+            case Difficulty.Extreme:
+                width = 35;
+                height = 35;
+                break;
         }
     }
 
@@ -456,6 +467,7 @@ public class MazeGenerator : MonoBehaviour
             case Difficulty.Easy: return 10;
             case Difficulty.Medium: return 25;
             case Difficulty.Hard: return 50;
+            case Difficulty.Extreme: return 100;
             default: return 15;
         }
     }
